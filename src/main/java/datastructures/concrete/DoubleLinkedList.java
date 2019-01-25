@@ -234,6 +234,7 @@ public class DoubleLinkedList<T> implements IList<T> {
     }
 
     @Override
+    //if we don't have indexof it the return flase;
     public boolean contains(T other) {
         return indexOf(other) != -1;
     }
@@ -247,7 +248,7 @@ public class DoubleLinkedList<T> implements IList<T> {
         return new DoubleLinkedListIterator<>(this.front);
     }
 
-    private static class Node<E> {
+    private final class Node<E> {
         // You may not change the fields in this node or add any new fields.
         private final E data;
         private Node<E> prev;
@@ -266,7 +267,7 @@ public class DoubleLinkedList<T> implements IList<T> {
         // Feel free to add additional constructors or methods to this class.
     }
 
-    private static class DoubleLinkedListIterator<T> implements Iterator<T> {
+    private final class DoubleLinkedListIterator<T> implements Iterator<T> {
         // You should not need to change this field, or add any new fields.
         private Node<T> current;
 
