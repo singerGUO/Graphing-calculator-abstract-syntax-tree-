@@ -2,12 +2,12 @@ package datastructures;
 
 import datastructures.concrete.DoubleLinkedList;
 import datastructures.interfaces.IList;
-import misc.exceptions.EmptyContainerException;
+//import misc.exceptions.EmptyContainerException;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import static org.junit.Assert.assertTrue;
+//import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**
@@ -24,13 +24,6 @@ import static org.junit.Assert.fail;
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TestDeleteFunctionality extends TestDoubleLinkedList {
-//    @Test(timeout=SECOND)
-//    public void testExample() {
-//        // Feel free to modify or del
-//        ete this dummy test.
-//        assertTrue(true);
-//        assertEquals(3, 3);
-//    }
 
 
     @Test(timeout = SECOND)

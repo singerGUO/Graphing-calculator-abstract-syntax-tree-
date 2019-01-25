@@ -147,11 +147,11 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
     // map.put(apple, map.getOrDefault(apple, 0) + 1);
 
     private static class Pair<K, V> {
-        private K key;
-        private V value;
+        public K key;
+        public V value;
 
         // You may add constructors and methods to this class as necessary.
-        private Pair(K key, V value) {
+        public Pair(K key, V value) {
             this.key = key;
             this.value = value;
         }

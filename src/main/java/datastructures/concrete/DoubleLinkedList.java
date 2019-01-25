@@ -248,30 +248,30 @@ public class DoubleLinkedList<T> implements IList<T> {
         return new DoubleLinkedListIterator<>(this.front);
     }
 
-    private final class Node<E> {
+    private static class Node<E> {
         // You may not change the fields in this node or add any new fields.
-        private final E data;
-        private Node<E> prev;
-        private Node<E> next;
+        public final E data;
+        public Node<E> prev;
+        public Node<E> next;
 
-        private Node(Node<E> prev, E data, Node<E> next) {
+        public Node(Node<E> prev, E data, Node<E> next) {
             this.data = data;
             this.prev = prev;
             this.next = next;
         }
 
-        private Node(E data) {
+        public Node(E data) {
             this(null, data, null);
         }
 
         // Feel free to add additional constructors or methods to this class.
     }
 
-    private final class DoubleLinkedListIterator<T> implements Iterator<T> {
+    private static class DoubleLinkedListIterator<T> implements Iterator<T> {
         // You should not need to change this field, or add any new fields.
         private Node<T> current;
 
-        private DoubleLinkedListIterator(Node<T> current) {
+        public DoubleLinkedListIterator(Node<T> current) {
             // You do not need to make any changes to this constructor.
             this.current = current;
         }
