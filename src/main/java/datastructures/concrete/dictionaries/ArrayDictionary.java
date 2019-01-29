@@ -89,7 +89,7 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
     //array can't be resized
     private void extendsCapacity() {
         // Pair<K,V>[] newArr = new Pair[maxSize * 2];
-        Pair[] newArr = new Pair[maxSize * 2];
+        Pair<K, V>[] newArr = makeArrayOfPairs(maxSize * 2);
         for (int i = 0; i < maxSize; i++) {
             newArr[i] = pairs[i];
         }

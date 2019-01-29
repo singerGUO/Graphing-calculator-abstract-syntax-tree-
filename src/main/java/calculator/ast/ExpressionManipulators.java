@@ -2,8 +2,11 @@ package calculator.ast;
 
 import calculator.interpreter.Environment;
 import calculator.errors.EvaluationError;
+import calculator.gui.ImageDrawer;
+import datastructures.concrete.DoubleLinkedList;
 import datastructures.interfaces.IDictionary;
-import misc.exceptions.NotYetImplementedException;
+import datastructures.interfaces.IList;
+//import misc.exceptions.NotYetImplementedException;
 
 /**
  * All of the public static methods in this class are given the exact same parameters for
@@ -14,6 +17,8 @@ import misc.exceptions.NotYetImplementedException;
  * pairs in some cases.
  */
 public class ExpressionManipulators {
+    private static IDictionary<String, AstNode> dictionary;
+
     /**
      * Checks to make sure that the given node is an operation AstNode with the expected
      * name and number of children. Throws an EvaluationError otherwise.
@@ -42,10 +47,10 @@ public class ExpressionManipulators {
      * For example, if this method receives the AstNode corresponding to
      * 'toDouble(3 + 4)', this method should return the AstNode corresponding
      * to '7'.
-     * 
+     *
      * This method is required to handle the following binary operations
      *      +, -, *, /, ^
-     *  (addition, subtraction, multiplication, division, and exponentiation, respectively) 
+     *  (addition, subtraction, multiplication, division, and exponentiation, respectively)
      * and the following unary operations
      *      negate, sin, cos
      *
@@ -60,28 +65,58 @@ public class ExpressionManipulators {
         // If you're not sure why we have a public method calling a private
         // recursive helper method, review your notes from CSE 143 (or the
         // equivalent class you took) about the 'public-private pair' pattern.
-
+        dictionary = env.getVariables();
         assertNodeMatches(node, "toDouble", 1);
-        AstNode exprToConvert = node.getChildren().get(0);
-        return new AstNode(toDoubleHelper(env.getVariables(), exprToConvert));
+        AstNode toDouble = node.getChildren().get(0);
+        return new AstNode(toDoubleHelper(toDouble));
     }
 
-    private static double toDoubleHelper(IDictionary<String, AstNode> variables, AstNode node) {
-        // There are three types of nodes, so we have three cases. 
+    private static double toDoubleHelper(AstNode node) {
+
         if (node.isNumber()) {
-            // TODO: your code here
-            throw new NotYetImplementedException();
+            return node.getNumericValue();
         } else if (node.isVariable()) {
-            // TODO: your code here
-            throw new NotYetImplementedException();
+
+            String nodeName = node.getName();
+            //remember that if we call toDouble(3+a) it doesn't work;
+            if (!dictionary.containsKey(nodeName)) {
+                throw new EvaluationError("Variable " + nodeName + " is undefined");
+            }
+            //we have to use recursion to avoid the situation that a=b,b=3
+            AstNode findRealValue = dictionary.get(nodeName);
+            return toDoubleHelper(findRealValue);
         } else {
             // You may assume the expression node has the correct number of children.
             // If you wish to make your code more robust, you can also use the provided
             // "assertNodeMatches" method to verify the input is valid.
             String name = node.getName();
+            AstNode child1 = node.getChildren().get(0);
+            AstNode child2 = null;
+            if (node.getChildren().size() == 2) {
+                child2 = node.getChildren().get(1);
+            }
 
-            // TODO: your code here
-            throw new NotYetImplementedException();
+
+            switch (name) {
+                case "sin":
+                    return Math.sin(toDoubleHelper(child1));
+                case "cos":
+                    return Math.cos(toDoubleHelper(child1));
+                case "negate":
+                    return -toDoubleHelper(child1);
+                case "+":
+                    return toDoubleHelper(child1) + toDoubleHelper(child2);
+                case "-":
+                    return toDoubleHelper(child1) - toDoubleHelper(child2);
+                case "*":
+                    return toDoubleHelper(child1) * toDoubleHelper(child2);
+                case "/":
+                    return toDoubleHelper(child1) / toDoubleHelper(child2);
+                case "^":
+                    return Math.pow(toDoubleHelper(child1), toDoubleHelper(child2));
+                default:
+                    throw new EvaluationError("Operator " + name + " is undefined");
+            }
         }
     }
 
@@ -109,7 +144,9 @@ public class ExpressionManipulators {
      * "NUM - NUM", or "NUM * NUM", simplify them.
      */
     public static AstNode handleSimplify(Environment env, AstNode node) {
+        dictionary = env.getVariables();
         // Try writing this one on your own!
+
         // Hint 1: Your code will likely be structured roughly similarly
         //         to your "handleToDouble" method
         // Hint 2: When you're implementing constant folding, you may want
@@ -118,11 +155,52 @@ public class ExpressionManipulators {
         //         when you should recurse. Do you recurse after simplifying
         //         the current level? Or before?
 
-        assertNodeMatches(node, "simplify", 1);
 
-        // TODO: Your code here
-        throw new NotYetImplementedException();
+        assertNodeMatches(node, "simplify", 1);
+        AstNode toSimplify = node.getChildren().get(0);
+        return handleSimplifyHelper(toSimplify);
     }
+
+    private static AstNode handleSimplifyHelper(AstNode node) {
+        // base case
+
+        if (node.isVariable() && dictionary.containsKey(node.getName())) {
+            return dictionary.get(node.getName());
+        }
+        if (node.isNumber() || (node.isVariable() && !dictionary.containsKey(node.getName()))) {
+            return node;
+        }
+        // recrusive case
+        AstNode left = handleSimplifyHelper(node.getChildren().get(0));
+
+        // code
+        //DFS                                name           children
+        AstNode result = new AstNode(node.getName(), new DoubleLinkedList<>());
+        //linkedlist only store right childeren and left childeren
+        result.getChildren().add(left);
+        if ("+-*/^".contains(node.getName())) {
+            AstNode right = handleSimplifyHelper(node.getChildren().get(1));
+            result.getChildren().add(right);
+            if (left.isNumber() && right.isNumber() && "+-*".contains(node.getName())) {
+                return new AstNode(calculate(result));
+            }
+        }
+        return result;
+    }
+
+    private static double calculate(AstNode node) {
+        double left = node.getChildren().get(0).getNumericValue();
+        double right = node.getChildren().get(1).getNumericValue();
+        String name = node.getName();
+        if (name.equals("+")) {
+            return left + right;
+        } else if (name.equals("-")) {
+            return left - right;
+        } else {
+            return left * right;
+        }
+    }
+
 
     /**
      * Accepts an Environment variable and a 'plot(exprToPlot, var, varMin, varMax, step)'
@@ -158,12 +236,60 @@ public class ExpressionManipulators {
      * @throws EvaluationError  if varMin > varMax
      * @throws EvaluationError  if 'var' was already defined
      * @throws EvaluationError  if 'step' is zero or negative
+     *
+     *
      */
-    public static AstNode plot(Environment env, AstNode node) {
-        assertNodeMatches(node, "plot", 5);
 
-        // TODO: Your code here
-        throw new NotYetImplementedException();
+
+    public static AstNode plot(Environment env, AstNode node) {
+        dictionary = env.getVariables();
+        assertNodeMatches(node, "plot", 5);
+        return plotHelper(env, node);
+    }
+
+    public static AstNode plotHelper(Environment env, AstNode node) {
+        // dictionary = env.getVariables();
+        //assertNodeMatches(node, "plot", 5);
+        IList<AstNode> children = node.getChildren();
+        double min = toDoubleHelper(children.get(2));
+        double max = toDoubleHelper(children.get(3));
+        double step = toDoubleHelper(children.get(4));
+
+        AstNode exprToPlot = children.get(0);
+        AstNode var = children.get(1);
+        String name = var.getName();
+
+        if (dictionary.containsKey(name)) {
+            throw new EvaluationError("Variable " + name + "defined");
+        }
+        if (min > max) {
+            throw new EvaluationError("VarMin has to be greater than varMax");
+        }
+        if (step <= 0) {
+            throw new EvaluationError("Step " + step + " is negative");
+        }
+
+        ImageDrawer drawer = env.getImageDrawer();
+        IList<Double> x = new DoubleLinkedList<>();
+        IList<Double> y = new DoubleLinkedList<>();
+
+        for (double i = min; i <= max; i += step) {
+            // we are drawing every a series of points with different x and y values.
+            dictionary.put(name, new AstNode(i));
+            //different values are stored in the same variables because they only need to use it once for calculations;
+
+            //we give the small subtree to toDoublehelper to function it
+            double yValue = toDoubleHelper(exprToPlot);
+            x.add(i);
+            y.add(yValue);
+        }
+
+        String title = "plot";
+        String yAxis = "output";
+
+        drawer.drawScatterPlot(title, name, yAxis, x, y);
+        //
+        dictionary.remove(name);
 
         // Note: every single function we add MUST return an
         // AST node that your "simplify" function is capable of handling.
@@ -174,6 +300,9 @@ public class ExpressionManipulators {
         //
         // When working on this method, you should uncomment the following line:
         //
-        // return new AstNode(1);
+        return new AstNode(0);
+
     }
+
+
 }
