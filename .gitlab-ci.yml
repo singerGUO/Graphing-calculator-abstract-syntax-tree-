@@ -12,21 +12,41 @@ compile:
   script:
     - wget -q https://courses.cs.washington.edu/courses/cse373/19wi/files/homework/scripts/hw2/compile.sh
     - sh compile.sh
+  tags:
+    - compile
+  only:
+    changes:
+      - src/**/*
 
 stylecheck:
   stage: test
   script:
     - wget -q https://courses.cs.washington.edu/courses/cse373/19wi/files/homework/scripts/hw2/stylecheck.sh
     - sh stylecheck.sh
+  tags:
+    - checkstyle
+  only:
+    changes:
+      - src/**/*
 
 testPart1:
   stage: test
   script:
     - wget -q https://courses.cs.washington.edu/courses/cse373/19wi/files/homework/scripts/hw2/p1.sh
     - sh p1.sh
+  tags:
+    - testPart1
+  only:
+    changes:
+      - src/**/*
 
 testPart2:
   stage: test
   script:
     - wget -q https://courses.cs.washington.edu/courses/cse373/19wi/files/homework/scripts/hw2/p2.sh
     - sh p2.sh
+  tags:
+    - testPart2
+  only:
+    changes:
+      - src/**/*
