@@ -167,7 +167,7 @@ public class ExpressionManipulators {
         if (node.isVariable() && dictionary.containsKey(node.getName())) {
 
 
-            return dictionary.get(node.getName());
+            return handleSimplifyHelper(dictionary.get(node.getName()));
         }
         if (node.isNumber() || (node.isVariable() && !dictionary.containsKey(node.getName()))) {
             return node;

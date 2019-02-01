@@ -44,7 +44,7 @@ public class Experiment1 {
         writer.addColumn("InputDictionarySize", dictionarySizes);
         writer.addColumn("Test1Results", test1Results);
         writer.addColumn("Test2Results", test2Results);
-        writer.writeToFile("experiment1.csv");
+        writer.writeToFile("experimentdata/experiment1.csv");
 
         System.out.println("All done!");
     }

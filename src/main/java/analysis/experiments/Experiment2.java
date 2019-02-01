@@ -30,7 +30,7 @@ public class Experiment2 {
         writer.addColumn("Test1Results", test1Results);
         writer.addColumn("Test2Results", test2Results);
         writer.addColumn("Test3Results", test3Results);
-        writer.writeToFile("experiment2.csv");
+        writer.writeToFile("experimentdata/experiment2.csv");
 
         System.out.println("All done!");
     }
