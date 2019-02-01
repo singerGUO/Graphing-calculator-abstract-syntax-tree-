@@ -26,7 +26,7 @@ public class Experiment4 {
         writer.addColumn("InputListSize", listSizes);
         writer.addColumn("ResultsTest1", test1Results);
         writer.addColumn("ResultsTest2", test2Results);
-        writer.writeToFile("experimentdata/experiment4.csv");
+        writer.writeToFile("experiment4.csv");
 
         System.out.println("All done!");
     }

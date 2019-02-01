@@ -11,6 +11,7 @@ public class Experiment2 {
     public static final long MAX_LIST_SIZE = 20000;
     public static final long STEP = 100;
 
+
     public static void main(String[] args) {
         IList<Long> listSizes = AnalysisUtils.makeDoubleLinkedList(0L, MAX_LIST_SIZE, STEP);
 
@@ -29,7 +30,7 @@ public class Experiment2 {
         writer.addColumn("Test1Results", test1Results);
         writer.addColumn("Test2Results", test2Results);
         writer.addColumn("Test3Results", test3Results);
-        writer.writeToFile("experimentdata/experiment2.csv");
+        writer.writeToFile("experiment2.csv");
 
         System.out.println("All done!");
     }

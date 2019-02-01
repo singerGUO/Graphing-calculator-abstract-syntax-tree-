@@ -165,6 +165,8 @@ public class ExpressionManipulators {
         // base case
 
         if (node.isVariable() && dictionary.containsKey(node.getName())) {
+
+
             return dictionary.get(node.getName());
         }
         if (node.isNumber() || (node.isVariable() && !dictionary.containsKey(node.getName()))) {
@@ -175,17 +177,17 @@ public class ExpressionManipulators {
 
         // code
         //DFS                                name           children
-        AstNode result = new AstNode(node.getName(), new DoubleLinkedList<>());
+        AstNode smallTree = new AstNode(node.getName(), new DoubleLinkedList<>());
         //linkedlist only store right childeren and left childeren
-        result.getChildren().add(left);
+        smallTree.getChildren().add(left);
         if ("+-*/^".contains(node.getName())) {
             AstNode right = handleSimplifyHelper(node.getChildren().get(1));
-            result.getChildren().add(right);
+            smallTree.getChildren().add(right);
             if (left.isNumber() && right.isNumber() && "+-*".contains(node.getName())) {
-                return new AstNode(calculate(result));
+                return new AstNode(calculate(smallTree));
             }
         }
-        return result;
+        return smallTree;
     }
 
     private static double calculate(AstNode node) {
@@ -248,8 +250,7 @@ public class ExpressionManipulators {
     }
 
     public static AstNode plotHelper(Environment env, AstNode node) {
-        // dictionary = env.getVariables();
-        //assertNodeMatches(node, "plot", 5);
+        ImageDrawer drawer = env.getImageDrawer();
         IList<AstNode> children = node.getChildren();
         double min = toDoubleHelper(children.get(2));
         double max = toDoubleHelper(children.get(3));
@@ -263,13 +264,13 @@ public class ExpressionManipulators {
             throw new EvaluationError("Variable " + name + "defined");
         }
         if (min > max) {
-            throw new EvaluationError("VarMin has to be greater than varMax");
+            throw new EvaluationError("min has to be greater than max");
         }
         if (step <= 0) {
             throw new EvaluationError("Step " + step + " is negative");
         }
 
-        ImageDrawer drawer = env.getImageDrawer();
+
         IList<Double> x = new DoubleLinkedList<>();
         IList<Double> y = new DoubleLinkedList<>();
 
@@ -277,17 +278,14 @@ public class ExpressionManipulators {
             // we are drawing every a series of points with different x and y values.
             dictionary.put(name, new AstNode(i));
             //different values are stored in the same variables because they only need to use it once for calculations;
-
-            //we give the small subtree to toDoublehelper to function it
+            // we give the small subtree to toDoublehelper to function it
             double yValue = toDoubleHelper(exprToPlot);
             x.add(i);
             y.add(yValue);
         }
 
-        String title = "plot";
-        String yAxis = "output";
 
-        drawer.drawScatterPlot(title, name, yAxis, x, y);
+        drawer.drawScatterPlot("plot", name, "y", x, y);
         //
         dictionary.remove(name);
 
