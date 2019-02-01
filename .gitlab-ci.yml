@@ -10,43 +10,64 @@ stages:
 compile:
   stage: compile
   script:
-    - wget -q https://courses.cs.washington.edu/courses/cse373/19wi/files/homework/scripts/hw2/compile.sh
+    - wget -q https://courses.cs.washington.edu/courses/cse373/19wi/files/homework/scripts/hw2/compile.sh -O compile.sh
     - sh compile.sh
   tags:
     - compile
   only:
+    refs:
+      - branches
     changes:
       - src/**/*
 
 stylecheck:
   stage: test
   script:
-    - wget -q https://courses.cs.washington.edu/courses/cse373/19wi/files/homework/scripts/hw2/stylecheck.sh
+    - wget -q https://courses.cs.washington.edu/courses/cse373/19wi/files/homework/scripts/hw2/stylecheck.sh -O stylecheck.sh
     - sh stylecheck.sh
   tags:
     - checkstyle
   only:
+    refs:
+      - branches
     changes:
       - src/**/*
 
 testPart1:
   stage: test
   script:
-    - wget -q https://courses.cs.washington.edu/courses/cse373/19wi/files/homework/scripts/hw2/p1.sh
+    - wget -q https://courses.cs.washington.edu/courses/cse373/19wi/files/homework/scripts/hw2/p1.sh -O p1.sh
     - sh p1.sh
   tags:
     - testPart1
   only:
+    refs:
+      - branches
     changes:
       - src/**/*
 
 testPart2:
   stage: test
   script:
-    - wget -q https://courses.cs.washington.edu/courses/cse373/19wi/files/homework/scripts/hw2/p2.sh
+    - wget -q https://courses.cs.washington.edu/courses/cse373/19wi/files/homework/scripts/hw2/p2.sh -O p2.sh
     - sh p2.sh
   tags:
     - testPart2
   only:
+    refs:
+      - branches
+    changes:
+      - src/**/*
+
+testTestsOnCorrectDelete:
+  stage: test
+  script:
+    - wget -q https://courses.cs.washington.edu/courses/cse373/19wi/files/homework/scripts/hw2/correct-delete.sh -O correct-delete.sh
+    - sh correct-delete.sh
+  tags:
+    - testPart1
+  only:
+    refs:
+      - branches
     changes:
       - src/**/*
