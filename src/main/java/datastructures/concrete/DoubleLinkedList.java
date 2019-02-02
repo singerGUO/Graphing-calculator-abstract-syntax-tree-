@@ -248,6 +248,15 @@ public class DoubleLinkedList<T> implements IList<T> {
         return new DoubleLinkedListIterator<>(this.front);
     }
 
+    public T getFront() {
+        return front.data;
+    }
+
+
+
+
+
+
     private static class Node<E> {
         // You may not change the fields in this node or add any new fields.
         public final E data;
@@ -292,6 +301,8 @@ public class DoubleLinkedList<T> implements IList<T> {
          * @throws NoSuchElementException if we have reached the end of the iteration and
          *                                there are no more elements to look at.
          */
+
+
         public T next() {
             if (hasNext()) {
                 T data = current.data;
