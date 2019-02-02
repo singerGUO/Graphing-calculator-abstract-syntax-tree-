@@ -180,10 +180,11 @@ public class ExpressionManipulators {
         AstNode smallTree = new AstNode(node.getName(), new DoubleLinkedList<>());
         //linkedlist only store right childeren and left childeren
         smallTree.getChildren().add(left);
-        if ("+-*/^".contains(node.getName())) {
+        String name = node.getName();
+        if (name.equals("/") || name.equals("*") || name.equals("+") || name.equals("-") || name.equals("^")) {
             AstNode right = handleSimplifyHelper(node.getChildren().get(1));
             smallTree.getChildren().add(right);
-            if (left.isNumber() && right.isNumber() && "+-*".contains(node.getName())) {
+            if (left.isNumber() && right.isNumber() && !name.equals("/") && !name.equals("^")) {
                 return new AstNode(calculate(smallTree));
             }
         }
