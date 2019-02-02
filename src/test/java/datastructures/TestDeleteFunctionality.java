@@ -99,23 +99,5 @@ public class TestDeleteFunctionality extends TestDoubleLinkedList {
         }
     }
 
-    @Test(timeout = SECOND)
-    public void frontRepair() {
-        IList<String> list = new DoubleLinkedList<>();
-        list.add("a");
-        list.add("b");
-        list.add("c");
-        list.delete(0);
-        assertEquals("b", ((DoubleLinkedList<String>) list).getFront());
-    }
-
-
-
-
-
-
-
-
-
 
 }

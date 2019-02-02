@@ -248,9 +248,6 @@ public class DoubleLinkedList<T> implements IList<T> {
         return new DoubleLinkedListIterator<>(this.front);
     }
 
-    public T getFront() {
-        return front.data;
-    }
 
 
 
